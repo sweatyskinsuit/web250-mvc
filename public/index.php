@@ -1,36 +1,33 @@
 <?php
 
-/**
- * ------------------------------------------------------------
- * Web250 MVC - Public Front Controller (with Router)
- * ------------------------------------------------------------
- */
-
 declare(strict_types=1);
-// DEV-ONLY error display (remove in production)
 ini_set('display_errors', '1');
-ini_set('display_startup_errors', '1');
 error_reporting(E_ALL);
-require __DIR__ . '/../vendor/autoload.php';
-
-use Web250\Mvc\Router;
-use Web250\Mvc\Controllers\HomeController;
-// 1) Create the Router and register routes
+require_once __DIR__ . '/../src/Router.php';
+require_once __DIR__ . '/../src/Controllers/SalamanderController.php';
 $router = new Router();
-// Route: GET / % HomeController::index()
 $router->get('/', function () {
-    return (new HomeController())->index();
+    $controller = new SalamanderController();
+    $controller->index();
 });
-// Optional alias: /home
-$router->get('/home', function () {
-    return (new HomeController())->index();
+$router->get('/salamanders', function () {
+    $controller = new SalamanderController();
+    $controller->index();
 });
-// Static page example using a closure
-$router->get('/about', function () {
-    return '<h1>About</h1><p>This route is handled by a closure.</p>';
-});
-// 2) Determine method and path
+/**
+ * Normalize the path so routes like "/" and "/salamanders"
+ * work even when the app lives under a subfolder such as
+ * /web-250-mvc/public on localhost.
+ */
 $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
-$path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH) ?? '/';
-// 3) Dispatch the route
-$router->dispatch($method, $path);
+// Raw path the browser requested (no query string)
+$uriPath = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?? '/';
+// Web path to THIS script's directory, e.g. "/web-250-mvc/public"
+$base = rtrim(str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'] ?? '')), '/');
+// Strip the base prefix so "/web-250-mvc/public/" becomes "/"
+$path = '/' . ltrim(preg_replace('#^' . preg_quote($base, '#') . '#', '', $uriPath), '/');
+// Normalize trailing double slashes -> "/"
+if ($path === '//') {
+    $path = '/';
+}
+$router->dispatch($path, $method);
