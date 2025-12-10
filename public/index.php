@@ -38,6 +38,11 @@ $router->get('/salamanders', function () {
     echo $controller->index();  // ← Added echo
 });
 
+// Register a route for "/salamanders/show"
+$router->get('/salamanders/show', function () {
+    $controller = new SalamanderController();
+    echo $controller->show();   // ← IMPORTANT!
+});
 // HomeController routes
 $router->get('/home', function () {
     $controller = new HomeController();
@@ -52,6 +57,11 @@ $router->get('/about', function () {
 $router->get('/contact', function () {
     $controller = new HomeController();
     echo $controller->contact();  // ← Added echo
+});
+
+$router->get('/show', function () {
+    $controller = new HomeController();
+    echo $controller->about();
 });
 
 /**

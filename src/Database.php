@@ -20,7 +20,7 @@ class Database
         // Extract connection settings
         $host = $config['host'];
         $db = $config['dbname'];
-        $user = $config['user'];
+        $username = $config['username'];
         $pass = $config['password'];
         $charset = $config['charset'];
 
@@ -36,6 +36,6 @@ class Database
         ];
 
         // Create and return the PDO object
-        return new PDO($dsn, $user, $pass, $options);
+        return new PDO($dsn, $username, $pass, $options);
     }
 }
