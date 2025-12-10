@@ -17,7 +17,7 @@ class Salamander
         $pdo = Database::getConnection();
         // SQL query to select all salamanders, ordered by name
         $sql = "SELECT id, name, habitat, description
-FROM salamanders
+FROM salamander
 ORDER BY name ASC";
         // Run the query. query() returns a PDOStatement.
         $stmt = $pdo->query($sql);
